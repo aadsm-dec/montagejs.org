@@ -27,10 +27,10 @@ function getAncestorLinks(doclet) {
     return helper.getAncestorLinks(data, doclet);
 }
 
-function sourceLink(path, line) {
+function sourceLink(path, line, label) {
     //TODO: `replace` should not be necessary
     var filepath = path.replace(/^node_modules\/montage\//, '');
-    return '<a href="https://github.com/montagejs/montage/blob/master/' + filepath + '#L' + line + '">' + filepath + '</a>';
+    return '<a href="https://github.com/montagejs/montage/blob/master/' + filepath + '#L' + line + '">' + (label || filepath) + '</a>';
 }
 
 function headCommitish(path) {
@@ -86,7 +86,13 @@ function addSignatureTypes(f) {
 }
 
 function addAttribs(f) {
-    var attribs = helper.getAttribs(f);
+    var attribs = helper.getAttribs(f).map(function (attrib) {
+        if (attrib === "static") {
+            return "constructor";
+        } else {
+            return attrib;
+        }
+    });
 
     f.attribs = '<span class="type-signature">'+htmlsafe(attribs.length? '<'+attribs.join(', ')+'> ' : '')+'</span>';
 }
